@@ -1,0 +1,70 @@
+As the name suggests, the chain of responsibility pattern creates a chain of receiver objects for a request. This pattern decouples sender and receiver of a request based on type of request. This pattern comes under behavioral patterns.
+
+Approver.java
+
+abstract class Approver {
+    protected Approver nextApprover;
+
+    public void setNextApprover(Approver nextApprover) {
+        this.nextApprover = nextApprover;
+    }
+
+    public abstract void processRequest(double amount);
+}
+
+Cashier.java
+
+class Cashier extends Approver {
+    public void processRequest(double amount) {
+        if (amount < 10000) {
+            System.out.println("Cashier: Approved withdrawal of Tk. " + amount);
+        } else {
+            System.out.println("Cashier: Forwarding request of Tk. " + amount);
+            if (nextApprover != null)
+                nextApprover.processRequest(amount);
+        }
+    }
+}
+
+SeniorOfficer.java
+
+class SeniorOfficer extends Approver {
+    public void processRequest(double amount) {
+        if (amount <= 1000000) {
+            System.out.println("Senior Officer: Approved withdrawal of Tk. " + amount);
+        } else {
+            System.out.println("Senior Officer: Forwarding request of Tk. " + amount);
+            if (nextApprover != null)
+                nextApprover.processRequest(amount);
+        }
+    }
+}
+
+Manager.java
+
+class Manager extends Approver {
+    public void processRequest(double amount) {
+        System.out.println("Manager: Approved withdrawal of Tk. " + amount);
+    }
+}
+
+Bank.java
+
+public class Bank {
+    public static void main(String[] args) {
+        Approver cashier = new Cashier();
+        Approver seniorOfficer = new SeniorOfficer();
+        Approver manager = new Manager();
+
+        // Set up the chain
+        cashier.setNextApprover(seniorOfficer);
+        seniorOfficer.setNextApprover(manager);
+
+        // Simulate withdrawal requests
+        cashier.processRequest(5000);
+        System.out.println("---");
+        cashier.processRequest(500000);
+        System.out.println("---");
+        cashier.processRequest(1500000);
+    }
+}

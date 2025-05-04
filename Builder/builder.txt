@@ -1,0 +1,103 @@
+
+Builder pattern builds a complex object using simple objects and using a step by step approach. This type of design pattern comes under creational pattern as this pattern provides one of the best ways to create an object.
+
+
+Computer.java
+
+// Product class
+public class Computer {
+    // Required parameters
+    private String CPU;
+    private String RAM;
+
+    // Optional parameters
+    private String storage;
+    private String graphicsCard;
+    private boolean isWiFiEnabled;
+    private boolean isBluetoothEnabled;
+
+    // Private constructor to enforce builder usage
+    private Computer(ComputerBuilder builder) {
+        this.CPU = builder.CPU;
+        this.RAM = builder.RAM;
+        this.storage = builder.storage;
+        this.graphicsCard = builder.graphicsCard;
+        this.isWiFiEnabled = builder.isWiFiEnabled;
+        this.isBluetoothEnabled = builder.isBluetoothEnabled;
+    }
+
+    // Getters
+    public String getCPU() { return CPU; }
+    public String getRAM() { return RAM; }
+    public String getStorage() { return storage; }
+    public String getGraphicsCard() { return graphicsCard; }
+    public boolean isWiFiEnabled() { return isWiFiEnabled; }
+    public boolean isBluetoothEnabled() { return isBluetoothEnabled; }
+
+    @Override
+    public String toString() {
+        return "Computer [CPU=" + CPU + ", RAM=" + RAM + ", Storage=" + storage +
+               ", GraphicsCard=" + graphicsCard + ", WiFi=" + isWiFiEnabled +
+               ", Bluetooth=" + isBluetoothEnabled + "]";
+    }
+
+    // Builder Class
+    public static class ComputerBuilder {
+        // Required parameters
+        private String CPU;
+        private String RAM;
+
+        // Optional parameters
+        private String storage;
+        private String graphicsCard;
+        private boolean isWiFiEnabled;
+        private boolean isBluetoothEnabled;
+
+        // Constructor with required params
+        public ComputerBuilder(String CPU, String RAM) {
+            this.CPU = CPU;
+            this.RAM = RAM;
+        }
+
+        // Setters for optional params
+        public ComputerBuilder setStorage(String storage) {
+            this.storage = storage;
+            return this;
+        }
+
+        public ComputerBuilder setGraphicsCard(String graphicsCard) {
+            this.graphicsCard = graphicsCard;
+            return this;
+        }
+
+        public ComputerBuilder enableWiFi(boolean isEnabled) {
+            this.isWiFiEnabled = isEnabled;
+            return this;
+        }
+
+        public ComputerBuilder enableBluetooth(boolean isEnabled) {
+            this.isBluetoothEnabled = isEnabled;
+            return this;
+        }
+
+        // Final build method
+        public Computer build() {
+            return new Computer(this);
+        }
+    }
+}
+
+Main.java
+
+public class Main {
+    public static void main(String[] args) {
+        Computer myPC = new Computer.ComputerBuilder("Intel i7", "16GB")
+                .setStorage("1TB SSD")
+                .setGraphicsCard("NVIDIA RTX 4070")
+                .enableWiFi(true)
+                .enableBluetooth(true)
+                .build();
+
+        System.out.println(myPC);
+    }
+}
